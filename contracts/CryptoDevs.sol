@@ -41,6 +41,46 @@ contract CryptoDevs is ERC721Enumerable, Ownable
         presaleEnded = block.timestamp + 5 minutes;
     }
 
+    function presaleMint() public payable onlyWhenNotPaused
+    {
+        require(presaleStarted && block.timestamp < presaleEnded, "Presale is not running");
+        require(whitelist(msg.sender), "You are not whitelisted");
+        require(tokenIds < maxTokenIds, "Exceeds maximum crypto dev supply");
+        require(msg.value >= _price, "Ether sent is not correct");
+
+        tokenIds +=1;
+        _safeMint(msg.sender, tokenIds);
+    }
+
+    function mint() public payable onlyWhenNotPaused
+    {
+        require(presaleStarted && block.timestamp > presaleEnded, "Presale is not ended yet");
+        require(tokenIds < maxTokenIds, "Exceeds maximum crypto dev supply");
+        require(msg.value >= _price, "Ether sent is not correct");
+
+        tokenIds += 1;
+        _safeMint(msg.sender, tokenIds);
+    }
+
+    function _baseURI()  internal view  virtual override returns(string memory)
+    {
+        return _baseTokenURI;
+    }
+
+
+    function setPaused(bool val) public onlyOWner
+    {
+        _paused = val;
+    }
+
+    function withdraw() public onlyOwer
+    {
+        address _owner = owner();
+        uint256 amount = address(this).balance;
+        (bool sent,) = _owner.call{value:amount}("");
+        require(sent, "Failed to send ether");
+    }
+
     receive() external payable {}
     fallback() external payable {}
 }
