@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -41,10 +41,10 @@ contract CryptoDevs is ERC721Enumerable, Ownable
         presaleEnded = block.timestamp + 5 minutes;
     }
 
-    function presaleMint() public payable onlyWhenNotPaused
+    function presaleMint() public payable onlywhenNotPaused
     {
         require(presaleStarted && block.timestamp < presaleEnded, "Presale is not running");
-        require(whitelist(msg.sender), "You are not whitelisted");
+        require(whitelist.whitelistedAddresses(msg.sender), "You are not whitelisted");
         require(tokenIds < maxTokenIds, "Exceeds maximum crypto dev supply");
         require(msg.value >= _price, "Ether sent is not correct");
 
@@ -52,7 +52,7 @@ contract CryptoDevs is ERC721Enumerable, Ownable
         _safeMint(msg.sender, tokenIds);
     }
 
-    function mint() public payable onlyWhenNotPaused
+    function mint() public payable onlywhenNotPaused
     {
         require(presaleStarted && block.timestamp > presaleEnded, "Presale is not ended yet");
         require(tokenIds < maxTokenIds, "Exceeds maximum crypto dev supply");
@@ -68,12 +68,12 @@ contract CryptoDevs is ERC721Enumerable, Ownable
     }
 
 
-    function setPaused(bool val) public onlyOWner
+    function setPaused(bool val) public onlyOwner
     {
         _paused = val;
     }
 
-    function withdraw() public onlyOwer
+    function withdraw() public onlyOwner
     {
         address _owner = owner();
         uint256 amount = address(this).balance;
