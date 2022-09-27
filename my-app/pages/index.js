@@ -22,7 +22,7 @@ export default function Home()
     const provider = await web3ModalRef.current.connect();
     const web3Provider = new providers.Web3Provider(provider);
 
-    const {chainId} = await Web3Provider.getNetwork();
+    const {chainId} = await web3Provider.getNetwork();
     if(chainId !== 5)
     {
       window.alert("Change network to goerli");
