@@ -152,7 +152,7 @@ export default function Home()
       const provider = await getProviderOrSigner();
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
 
-      const _presaleEnded = await nftContract.preSaleEnded();
+      const _presaleEnded = await nftContract.presaleEnded();
 
       const hasEnded = _presaleEnded.lt(Math.floor(Date.now() / 1000));
 
